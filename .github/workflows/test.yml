@@ -2,12 +2,14 @@ name: Rust
 
 on:
   push:
-    branches: [main]
+    branches: 
+      - "**"
   pull_request:
-    branches: [main]
+    branches: 
+      - "**"
 
 jobs:
-  build:
+  test:
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -22,5 +24,5 @@ jobs:
         run: rustup component add rustfmt
       - name: Build
         run: cargo build --verbose
-      - name: Run tests
+      - name: Test
         run: cargo test --verbose
