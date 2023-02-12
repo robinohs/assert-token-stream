@@ -8,6 +8,10 @@ keywords = ["tokenstream", "testing", "macro-helper", "test"]
 categories = ["development-tools::procedural-macro-helpers", "development-tools::testing", "development-tools"]
 description = "Compares tokenstreams by applying rustfmt and using pretty_assertions to visualize differences."
 license = "MIT OR Apache-2.0"
+include = [
+    "**/*.rs",
+    "Cargo.toml",
+]
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
