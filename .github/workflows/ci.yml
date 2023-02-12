@@ -45,7 +45,7 @@ jobs:
   outdated:
     name: Outdated
     runs-on: ubuntu-latest
-    if: github.event.name != "pull_request"
+    if: github.event.name != 'pull_request'
     timeout-minutes: 20
     steps:
       - uses: actions/checkout@v3
