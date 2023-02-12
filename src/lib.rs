@@ -21,7 +21,15 @@ enum RustfmtError {
     InvalidRust(String),
 }
 
-pub fn compare_tokenstreams(first_tokenstream: impl ToString, second_tokenstream: impl ToString) {
+/// # Panics
+///
+/// This function will panic for different reasons:
+/// - The tokenstreams are not equal.
+/// - Any tokenstream is no valid rust code.
+/// - rustfmt is not installed or configured wrong.
+/// - It was not possible to create a child process to run rustfmt.
+/// - The output of rustfmt could not be converted to Utf-8.
+pub fn compare_tokenstreams(first_tokenstream: &impl ToString, second_tokenstream: &impl ToString) {
     let first_formatted = match apply_rustfmt(first_tokenstream) {
         Ok(tokens) => tokens,
         Err(e) => panic!("{}", e),
@@ -30,10 +38,10 @@ pub fn compare_tokenstreams(first_tokenstream: impl ToString, second_tokenstream
         Ok(tokens) => tokens,
         Err(e) => panic!("{}", e),
     };
-    assert_eq!(first_formatted, second_formatted)
+    assert_eq!(first_formatted, second_formatted);
 }
 
-fn apply_rustfmt(tokens: impl ToString) -> Result<String, RustfmtError> {
+fn apply_rustfmt(tokens: &impl ToString) -> Result<String, RustfmtError> {
     let mut process = Command::new("rustfmt")
         .arg("--")
         .stdin(Stdio::piped())
@@ -41,9 +49,8 @@ fn apply_rustfmt(tokens: impl ToString) -> Result<String, RustfmtError> {
         .stderr(Stdio::piped())
         .spawn()?;
 
-    let stdin = match process.stdin.as_mut() {
-        Some(stdin) => stdin,
-        None => return Err(RustfmtError::Stdin),
+    let Some(stdin) = process.stdin.as_mut() else {
+        return Err(RustfmtError::Stdin);
     };
 
     stdin.write_all(tokens.to_string().as_bytes())?;
@@ -86,7 +93,7 @@ mod tests {
                 return a;
             }
         };
-        assert_tokenstreams_eq!(first, second);
+        assert_tokenstreams_eq!(&first, &second);
     }
 
     #[test]
@@ -104,7 +111,7 @@ mod tests {
                 return b;
             }
         };
-        assert_tokenstreams_eq!(first, second);
+        assert_tokenstreams_eq!(&first, &second);
     }
 
     #[test]
@@ -123,7 +130,7 @@ mod tests {
                 return a;
             }
         };
-        assert_tokenstreams_eq!(first, second);
+        assert_tokenstreams_eq!(&first, &second);
     }
 
     #[test]
@@ -142,6 +149,6 @@ mod tests {
                 return a;
             }
         };
-        assert_tokenstreams_eq!(first, second);
+        assert_tokenstreams_eq!(&first, &second);
     }
 }
