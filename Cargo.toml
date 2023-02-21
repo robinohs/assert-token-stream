@@ -9,7 +9,7 @@ categories = ["development-tools::procedural-macro-helpers", "development-tools:
 description = "Compares tokenstreams by applying rustfmt and using pretty_assertions to visualize differences."
 license = "MIT OR Apache-2.0"
 include = [
-    "**/*.rs",
+    "src/**/*.rs",
     "Cargo.toml",
 ]
 
